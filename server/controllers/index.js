@@ -216,10 +216,14 @@ module.exports = {
     post: function(req, res) {
       var response = {};
       var location = req.body.location.trim().split(' ').join('+');
+      console.log(location);
+      var filterStrings = req.body.filters.toString();
+      console.log('the filter strings:', filterStrings);
+      filterStrings = filterStrings || 'nightlife,arts,restaurants,shopping,landmarks,tours,parks'
       var options = {
         location: location,
         limit: 20,
-        category_filter: 'landmarks,tours,arts'
+        category_filter: filterStrings
       };
       requestYelp(options, function(err, resp, body) {
         response.eventsFromYelp = JSON.parse(body).businesses;
