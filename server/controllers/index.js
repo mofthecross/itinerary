@@ -258,30 +258,6 @@ module.exports = {
     ************************************************/  
   city: {
     getNomad: function(req, res) {
-      // var response = {};
-
-      var cityInfo = req.body.name + "-" + req.body.state + "-" + req.body.country;
-
-      cityInfo = cityInfo.split("");
-      for (var i = 0; i < cityInfo.length; i++) {
-        if (cityInfo[i] === " ") {
-          cityInfo[i] = "-";
-        }
-      }
-      cityInfo = cityInfo.join("");
-
-      requestNomad(cityInfo, function(err, data, body) {
-        // console.log('this is the response in getNomad: ', resp);
-        res.send(data.body);
-      });
-    }
-  },
-
-  /************************************************
-    // Requests to /city
-    ************************************************/  
-  city: {
-    getNomad: function(req, res) {
       //split the city into an array
       //[San Franciso, CA, United States]
 
