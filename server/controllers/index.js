@@ -219,7 +219,7 @@ module.exports = {
       console.log(location);
       var filterStrings = req.body.filters.toString();
       console.log('the filter strings:', filterStrings);
-      filterStrings = filterStrings || 'nightlife,arts,restaurants,shopping,landmarks,tours,parks'
+      filterStrings = filterStrings || 'arts,restaurants,landmarks,tours,parks'
       var options = {
         location: location,
         limit: 20,
