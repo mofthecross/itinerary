@@ -249,7 +249,6 @@ export default class ChoosePlannerView extends React.Component {
 
   toggleFilter(event) {
     event.preventDefault();
-    debugger
     let yelpFilter = event.target.id
     //Check if filter needs to be added or removed from state
     let foundFilter = _.indexOf(this.state.filters, yelpFilter)
