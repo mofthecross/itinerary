@@ -3,6 +3,7 @@ var n = require('nonce')();
 var request = require('request');
 var qs = require('querystring');
 var _ = require('lodash');
+var db = require('../db');
 require('dotenv').config();
 
 /* Function for yelp call
@@ -24,7 +25,29 @@ exports.requestNomad = function(city, callback) {
 
   /* Then we use request to send make the API Request */
   request(apiURL.toLowerCase(), function(error, response, body) {
-    return callback(error, response, body);
-  });
+    callback(error, response, body);
+    var respJSON = JSON.parse(response.body);
+    var newCity = {
+      name: respJSON.result[0].info.city.name,
+      country: respJSON.result[0].info.country.name,
+      latitude: respJSON.result[0].info.location.latitude.toString(),
+      longitude: respJSON.result[0].info.location.longitude.toString(),
+      imgUrl: respJSON.result[0].media.image['250']
+    }
 
+    db.City.findOrCreate({
+      where: newCity
+    })
+    .spread(function(city, created) {
+      if (created) {
+        console.log('new City', city.dataValues);
+      } else {
+        console.log('already exists!');
+      }
+    })
+    .catch(function(err) {
+      console.log('unable to add city', err);
+    });
+
+  });
 };
