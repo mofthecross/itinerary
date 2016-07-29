@@ -1,6 +1,7 @@
 import React from 'react';
 import {PlannerView} from './PlannerView';
 import Geosuggest from 'react-geosuggest';
+import {FilterButtons} from './FilterButtons';
 
 export default class ChoosePlannerView extends React.Component {
 
@@ -274,7 +275,6 @@ export default class ChoosePlannerView extends React.Component {
       <div>
         <div className="container centerText">
           <form>
-            <h1>{this.state.filters}</h1>
             <h2>Where will your travels take you?</h2>
             <div className='row'>
               <label>
