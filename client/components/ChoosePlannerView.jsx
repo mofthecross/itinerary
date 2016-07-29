@@ -29,8 +29,15 @@ export default class ChoosePlannerView extends React.Component {
           temperature: null,
           type: null
         },
-        cost: null,
-        scores: null
+        cost: {
+          hotel: null,
+          airbnb: null
+        },
+        scores: {
+          safety: null,
+          nomadScore: null,
+          nightLife: null
+        }
       }
     };
   }
@@ -259,10 +266,17 @@ export default class ChoosePlannerView extends React.Component {
       nomadData: {
         weather: {
           temperature: 'Current Temperature: ' + front.info.weather.temperature.fahrenheit + '\u00B0',
-          type: 'Weather Type: ' + front.info.weather.type
+          type: 'Type of Weather: ' + front.info.weather.type
         },
-        cost: null,
-        scores: null
+        cost: {
+          hotel: 'Average Hotel Cost Per Night: $' + front.cost.hotel.USD,
+          airbnb: 'Average AirBnb Cost Per Night: $' + front.cost.airbnb_median.USD
+        },
+        scores: {
+          safety: 'Safety Rating: ' + (front.scores.safety * 5) + '/5',
+          nomadScore: 'City Rating: ' + (front.scores.nomadScore * 5) + '/5',
+          nightLife: 'Night Life Rating: ' + (front.scores.nightlife * 5) + '/5'
+        }
       }
     });
   }
@@ -323,11 +337,21 @@ export default class ChoosePlannerView extends React.Component {
           </div>
         </div>
 
-        <h3>Available City Facts</h3>
+        <h2>Available City Facts</h2>
         <div>
+          {this.state.nomadData.scores.nomadScore}
+          <br></br>
+          {this.state.nomadData.scores.nightLife}
+          <br></br>
+          {this.state.nomadData.scores.safety}
+          <br></br>
           {this.state.nomadData.weather.temperature}
           <br></br>
           {this.state.nomadData.weather.type}
+          <br></br>
+          {this.state.nomadData.cost.hotel}
+          <br></br>
+          {this.state.nomadData.cost.airbnb}
         </div>
 
         <div>
