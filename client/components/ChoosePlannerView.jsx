@@ -1,6 +1,7 @@
 import React from 'react';
 import {PlannerView} from './PlannerView';
 import Geosuggest from 'react-geosuggest';
+import {FilterButtons} from './FilterButtons';
 
 export default class ChoosePlannerView extends React.Component {
 
@@ -22,7 +23,8 @@ export default class ChoosePlannerView extends React.Component {
       selected: '',
       itineraryId: null,
       selectedCity: null,
-      nomadData: null
+      nomadData: null,
+      filters: []
     };
   }
 
@@ -82,12 +84,12 @@ export default class ChoosePlannerView extends React.Component {
   }
 
   getItinerary() {
-    console.log('getting itinerary');
-    this.serverRequest(
-      '/classes/events',
-      { location: this.state.location },
-      this.formatYelpData.bind(this)
-    );
+    console.log('getting itinerary')
+    let data = {
+      location: this.state.location,
+      filters: this.state.filters
+    }
+    this.serverRequest('/classes/events', data, this.formatYelpData.bind(this));
   }
 
   swap() {
@@ -245,6 +247,28 @@ export default class ChoosePlannerView extends React.Component {
     });
   }
 
+  toggleFilter(event) {
+    event.preventDefault();
+    let yelpFilter = event.target.id
+    //Check if filter needs to be added or removed from state
+    let foundFilter = _.indexOf(this.state.filters, yelpFilter)
+    if (foundFilter === -1) {
+      //Highlight button that was pressed
+      event.target.className = event.target.className.concat(' btn-primary');
+      this.setState({
+        filters: this.state.filters.concat(yelpFilter)
+      });
+    } else {
+      //Remove highlight of button
+      event.target.className = event.target.className.replace('btn-primary', '');
+      let filters = this.state.filters.slice()
+      filters.splice(foundFilter, 1);
+      this.setState({
+        filters: filters
+      })
+    }
+  }
+
   render() {
     return (
       <div>
@@ -259,22 +283,23 @@ export default class ChoosePlannerView extends React.Component {
                 </div>
 
               </label>
-              <p></p>
+              <br/>
               <label>
                 Start Date:
                 <input type='date' value={this.state.start} onChange={this.handleInputChange.bind(this)} id="startDate"></input>
               </label>
-              <p></p>
+              <br/>
               <label>
                 End Date:
                 <input type='date' value={this.state.end} onChange={this.handleInputChange.bind(this)} id="endDate"></input>
               </label>
             </div>
           </form>
-          <p></p>
+          <br/>
+          <FilterButtons toggleFilter={this.toggleFilter.bind(this)}/>
+          <br/>
           <div className='planner-prefs'>
-            <button className="btn btn-success" onClick={this.getData.bind(this)}>Blank Itinerary</button>
-            <button className="btn btn-success" onClick={this.getData.bind(this)}>Preference-Based Itinerary</button>
+            <button className="btn btn-success" onClick={this.getData.bind(this)}>Create</button>
           </div>
         </div>
 
