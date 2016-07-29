@@ -23,8 +23,15 @@ export default class ChoosePlannerView extends React.Component {
       selected: '',
       itineraryId: null,
       selectedCity: null,
-      nomadData: null,
-      filters: []
+      filters: [],
+      nomadData: {
+        weather: {
+          temperature: null,
+          type: null
+        },
+        cost: null,
+        scores: null
+      }
     };
   }
 
@@ -200,6 +207,8 @@ export default class ChoosePlannerView extends React.Component {
         cityData.state = citySplit[1];
       }
       cityData.country = citySplit[2];
+    } else {
+      cityData.country = citySplit[1];
     }
 
     this.setState({
@@ -242,8 +251,19 @@ export default class ChoosePlannerView extends React.Component {
   }
 
   formatNomadData(data) {
+
+    console.log('This is the data!! ', data);
+    var front = data.result[0];
+  
     this.setState({
-      nomadData: data.result[0].info.weather.type
+      nomadData: {
+        weather: {
+          temperature: 'Current Temperature: ' + front.info.weather.temperature.fahrenheit + '\u00B0',
+          type: 'Weather Type: ' + front.info.weather.type
+        },
+        cost: null,
+        scores: null
+      }
     });
   }
 
@@ -303,8 +323,12 @@ export default class ChoosePlannerView extends React.Component {
           </div>
         </div>
 
-        <h2>City Facts</h2>
-        <div>{this.state.nomadData}</div>
+        <h3>Available City Facts</h3>
+        <div>
+          {this.state.nomadData.weather.temperature}
+          <br></br>
+          {this.state.nomadData.weather.type}
+        </div>
 
         <div>
           <PlannerView 
