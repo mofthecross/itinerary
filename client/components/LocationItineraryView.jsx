@@ -60,7 +60,8 @@ export default class LocationItineraryView extends React.Component {
         {this.state.itineraries.map(itinerary => { 
           return (
             <ExpandedItineraryView itinerary={itinerary} saveItinerary={this.props.saveItinerary} usable={true}/>
-          )})}
+          );
+        })}
       </div>
     );
   }
@@ -80,4 +81,4 @@ export default class LocationItineraryView extends React.Component {
   //     </div>
   //   );
   // }
-};
+}

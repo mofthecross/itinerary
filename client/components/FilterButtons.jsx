@@ -1,7 +1,7 @@
 import React from 'react';
 
 export let FilterButtons = (props) => {
-  return(
+  return (
     <div>
       <p> Select Filters</p>
       <button className='btn btn-sm' id="arts" onClick={props.toggleFilter}>Arts & Entertainment</button>
@@ -10,5 +10,5 @@ export let FilterButtons = (props) => {
       <button className='btn btn-sm' id="tours" onClick={props.toggleFilter}>Tours</button>
       <button className='btn btn-sm' id="parks" onClick={props.toggleFilter}>Parks</button>
     </div>
-  )
-}
+  );
+};

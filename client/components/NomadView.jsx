@@ -7,20 +7,20 @@ export let NomadView = (props) => {
         <div className="panel-heading">
           <h1 className="panel-title">Available City Facts</h1>
         </div>
-        <div>
-          <b>City Rating:</b> {props.data.scores.nomadScore}
+        <div className="padding">
+          <i className="fa fa-star" aria-hidden="true"></i> <b>City Rating:</b> {props.data.scores.nomadScore}
           <br></br>
-          <b>Night Life Rating:</b> {props.data.scores.nightLife}
+          <i className="fa fa-moon-o" aria-hidden="true"></i> <b>Night Life Rating:</b> {props.data.scores.nightLife}
           <br></br>
-          <b>Safety Rating:</b> {props.data.scores.safety}
+          <i className="fa fa-users" aria-hidden="true"></i> <b>Safety Rating:</b> {props.data.scores.safety}
           <br></br>
-          <b>Current Temperature:</b> {props.data.weather.temperature}
+          <i className="fa fa-sun-o" aria-hidden="true"></i> <b>Current Temperature:</b> {props.data.weather.temperature}
           <br></br>
-          <b>Weather Type:</b> {props.data.weather.type}
+          <i className="fa fa-bolt" aria-hidden="true"></i> <b>Weather Type:</b> {props.data.weather.type}
           <br></br>
-          <b>Average Hotel Cost Per Night:</b> ${props.data.cost.hotel}
+          <i className="fa fa-bed" aria-hidden="true"></i> <b>Average Hotel Cost Per Night:</b> ${props.data.cost.hotel}
           <br></br>
-          <b>Average AirBnb Cost Per Night:</b> ${props.data.cost.airbnb}
+          <i className="fa fa-home" aria-hidden="true"></i> <b>Average AirBnb Cost Per Night:</b> ${props.data.cost.airbnb}
         </div>
       </div>;
   }
