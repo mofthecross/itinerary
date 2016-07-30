@@ -8,6 +8,7 @@ import LandingView from './LandingView';
 import ChoosePlannerView from './ChoosePlannerView';
 import ItineraryView from './ItineraryView';
 import UserItineraryView from './UserItineraryView';
+import NomadView from './NomadView';
 
 var requireAuth = function() {
   if (!window.user) {
