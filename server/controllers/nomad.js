@@ -12,6 +12,17 @@ require('dotenv').config();
  * callback: callback(error, response, body)
  */
 exports.requestNomad = function(city, callback) {
+  var cityQueryString;
+  console.log('yo',city);
+  city.country === 'United States' ?
+    cityQueryString = city.city + ' ' + city.state + ' ' + city.country :
+    cityQueryString = city.city + ' ' + city.country;
+
+  cityQueryString = cityQueryString.split(' ').join('-');
+
+  console.log('dash', cityQueryString);
+
+
   /* The type of request */
   var httpMethod = 'GET';
 
@@ -19,7 +30,7 @@ exports.requestNomad = function(city, callback) {
   var url = 'https://nomadlist.com/api/v2/list/cities/';
 
   /* Add the query string to the url */
-  var apiURL = url + city;
+  var apiURL = url + cityQueryString;
 
   console.log('This is the apiURL: ' + apiURL.toLowerCase());
 
@@ -32,7 +43,8 @@ exports.requestNomad = function(city, callback) {
       country: respJSON.result[0].info.country.name,
       latitude: respJSON.result[0].info.location.latitude.toString(),
       longitude: respJSON.result[0].info.location.longitude.toString(),
-      imgUrl: respJSON.result[0].media.image['250']
+      imgUrl: respJSON.result[0].media.image['250'],
+      geoId: city.geoId
     }
 
     db.City.findOrCreate({

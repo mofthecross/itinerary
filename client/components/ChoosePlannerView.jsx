@@ -9,6 +9,7 @@ export default class ChoosePlannerView extends React.Component {
     super(props);
 
     this.state = {
+      geoId: null,
       user: window.user,
       location: '',
       startDate: '',
@@ -53,7 +54,7 @@ export default class ChoosePlannerView extends React.Component {
     this.setState(newState, function() {
       if (targetID === 'startDate' || targetID === 'endDate') {
         this.setState({numDays: this.getDateDiff()});
-      }        
+      }
     });
   }
 
@@ -149,13 +150,13 @@ export default class ChoosePlannerView extends React.Component {
       return formatted;
     });
 
-        
+
     var newState = {
-      events: formattedYelp, 
+      events: formattedYelp,
       yelpEvents: formattedYelp,
       selected: formattedYelp[0].name
     };
-      
+
     this.setState(newState);
     window.fromItinId = undefined;
   }
@@ -183,10 +184,11 @@ export default class ChoosePlannerView extends React.Component {
       });
 
       var data = {
+        geoId: this.state.geoId,
         id: this.state.itineraryId,
         events: eventsToSave,
         user: this.state.user,
-        location: this.state.location,
+        location: this.state.geoId,
         startDate: this.state.startDate,
         endDate: this.state.endDate,
         numDays: this.state.numDays
@@ -202,27 +204,48 @@ export default class ChoosePlannerView extends React.Component {
   onSuggestSelect(suggest) {
     //we receive the information as, "Sacramento, CA, United States"
     //we split it so everything is its own string
-    var citySplit = suggest.label.split(', ');
-    var cityData = {
-      name: citySplit[0],
-      lat: suggest.location.lat,
-      lng: suggest.location.lng
-    };
+    // types={['(cities)']}
+    console.log('onSuggest',suggest);
+    var cityData = {};
 
-    if (citySplit.length > 2) {
-      if (citySplit[2] === 'United States') {
-        cityData.state = citySplit[1];
+    suggest.gmaps.address_components.forEach(function(address) {
+      if (_.indexOf(address.types, 'locality') !== -1) {
+        cityData.city = address.long_name;
+      } else if (_.indexOf(address.types, 'administrative_area_level_1') !== -1) {
+        cityData.state = address.short_name;
+      } else if (_.indexOf(address.types, 'country') !== -1) {
+        cityData.country = address.long_name;
       }
-      cityData.country = citySplit[2];
-    } else {
-      cityData.country = citySplit[1];
-    }
+    });
+    cityData.coordinates = {};
+    cityData.coordinates.lat = suggest.location.lat;
+    cityData.coordinates.lon = suggest.location.lng;
+    cityData.geoId = suggest.placeId;
+
+    console.log('city, state, country', cityData);
+
+
+    // var citySplit = suggest.label.split(', ');
+    // var cityData = {
+    //   name: citySplit[0],
+    //   lat: suggest.location.lat,
+    //   lng: suggest.location.lng
+    // };
+    //
+    // if (citySplit.length > 2) {
+    //   if (citySplit[2] === 'United States') {
+    //     cityData.state = citySplit[1];
+    //   }
+    //   cityData.country = citySplit[2];
+    // } else {
+    //   cityData.country = citySplit[1];
+    // }
 
     this.setState({
       selectedCity: cityData,
-      location: cityData.name + ', ' + cityData.country
+      location: cityData.city + ', ' + cityData.country,
+      geoId: cityData.geoId
     });
-    console.log('This is the selectedCity state: ', this.state.selectedCity);
   }
 
   // serverRequest2(url, data) {
@@ -261,7 +284,7 @@ export default class ChoosePlannerView extends React.Component {
 
     console.log('This is the data!! ', data);
     var front = data.result[0];
-  
+
     this.setState({
       nomadData: {
         weather: {
@@ -313,14 +336,23 @@ export default class ChoosePlannerView extends React.Component {
               <label>
                 Destination:
                 <div>
-                  <Geosuggest className='geosuggest' placeholder='Search a city' onSuggestSelect={this.onSuggestSelect.bind(this)} />
+                  <Geosuggest
+                    className='geosuggest'
+                    types={['(cities)']}
+                    placeholder='Search a city'
+                    onSuggestSelect={this.onSuggestSelect.bind(this)}
+                  />
                 </div>
 
               </label>
               <br/>
               <label>
                 Start Date:
-                <input type='date' value={this.state.start} onChange={this.handleInputChange.bind(this)} id="startDate"></input>
+                <input type='date'
+                  value={this.state.start}
+                  onChange={this.handleInputChange.bind(this)}
+                  id="startDate">
+                </input>
               </label>
               <br/>
               <label>
@@ -355,11 +387,11 @@ export default class ChoosePlannerView extends React.Component {
         </div>
 
         <div>
-          <PlannerView 
-            location={this.state.location} 
-            numDays={this.state.numDays} 
-            yelpEvents={this.state.yelpEvents} 
-            events={this.state.events} 
+          <PlannerView
+            location={this.state.location}
+            numDays={this.state.numDays}
+            yelpEvents={this.state.yelpEvents}
+            events={this.state.events}
             swap={this.swap.bind(this)}
             handleChange={this.handleChange.bind(this)}
             saveItinerary={this.saveItinerary.bind(this)}

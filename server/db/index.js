@@ -35,7 +35,7 @@ var User = sequelize.define('User', {
 // Itinerary table
 ************************************************/
 var Itinerary = sequelize.define('Itinerary', {
-  location: {
+  geoId: {
     type: Sequelize.STRING(100),
     allowNull: false
   },
@@ -104,7 +104,8 @@ var City = sequelize.define('City', {
   country: Sequelize.STRING,
   latitude: Sequelize.STRING,
   longitude: Sequelize.STRING,
-  imgUrl: Sequelize.STRING
+  imgUrl: Sequelize.STRING,
+  geoId: Sequelize.STRING
 })
 
 

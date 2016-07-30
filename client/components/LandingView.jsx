@@ -10,6 +10,7 @@ export default class LandingView extends React.Component {
 	    locations: []
 		};
 	}
+
   componentDidMount() {
 		//public token for mapbox
 		L.mapbox.accessToken = 'pk.eyJ1IjoibW9mdGhlY3Jvc3MiLCJhIjoiY2lyNXBkNnliMDA5Z2c4bTFweWJlN2dyaCJ9.dBygwwib3OjYEypyhSMVDg';
@@ -30,10 +31,6 @@ export default class LandingView extends React.Component {
 			}
 		];
 
-		var map = L.mapbox.map('map', 'mapbox.streets')
-		.setView([37.8, -96], 4);
-
-		var myLayer = L.mapbox.featureLayer().setGeoJSON(example).addTo(map);
 		// mapGeo.scrollWheelZoom.enable();
 
 		this.serverRequest = function ajax(url, data) {
@@ -54,7 +51,10 @@ export default class LandingView extends React.Component {
 						return item.location;
 					})
 					console.log(locations);
-					this.setState({locations: locations});
+					// this.setState({locations: locations});
+          var map = L.mapbox.map('map', 'mapbox.streets')
+            .setView([37.8, -96], 4);
+          var myLayer = L.mapbox.featureLayer().setGeoJSON(locations).addTo(map);
 				})
 				.catch(err => {
 					console.log(err);
