@@ -5,7 +5,7 @@ import {DayView} from './DayView';
 export let PlannerView = (props) => {
   if (props.events.length > 0) {
     return (
-      <div>
+      <div className='col-md-12'>
         <div>
           <h4>Your trip to {props.location}.</h4>
           <button className="btn btn-success" onClick={props.saveItinerary}>Save Itinerary</button>
@@ -37,8 +37,6 @@ export let PlannerView = (props) => {
       </div>
     );
   } else {
-    return (
-      <h3 className="text-center">Create an itinerary</h3>
-    );
+    return (<div></div>);
   }
 };

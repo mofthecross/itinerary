@@ -3,7 +3,7 @@ import React from 'react';
 export let NomadView = (props) => {
   if (props.data.defined) {
     var renderTags = 
-      <div className="panel panel-success">
+      <div className="panel panel-success col-md-6 col-md-offset-3">
         <div className="panel-heading">
           <h1 className="panel-title">Available City Facts</h1>
         </div>
