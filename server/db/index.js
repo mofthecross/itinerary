@@ -21,7 +21,7 @@ if (process.env.DATABASE_URL) {
 // User table
 ************************************************/
 var User = sequelize.define('User', {
-  name: { 
+  name: {
     type: Sequelize.STRING(25),
     allowNull: false
   },
@@ -35,11 +35,11 @@ var User = sequelize.define('User', {
 // Itinerary table
 ************************************************/
 var Itinerary = sequelize.define('Itinerary', {
-  location: {
+  geoId: {
     type: Sequelize.STRING(100),
     allowNull: false
   },
-  numDays: { 
+  numDays: {
     type: Sequelize.INTEGER,
     allowNull: false
   },
@@ -71,7 +71,7 @@ var Event = sequelize.define('Event', {
   },
   name: {
     type: Sequelize.STRING(100),
-    allowNull: false    
+    allowNull: false
   },
   slot: {
     type: Sequelize.INTEGER,
@@ -93,11 +93,21 @@ var Event = sequelize.define('Event', {
     type: Sequelize.STRING(255),
     allowNull: true
   },
-  address: {    
+  address: {
     type: Sequelize.STRING(255),
     allowNull: true
   }
 });
+
+var City = sequelize.define('City', {
+  name: Sequelize.STRING,
+  country: Sequelize.STRING,
+  latitude: Sequelize.STRING,
+  longitude: Sequelize.STRING,
+  imgUrl: Sequelize.STRING,
+  geoId: Sequelize.STRING
+})
+
 
 /************************************************
 // Add foreign keys
@@ -108,20 +118,26 @@ Itinerary.belongsTo(User);
 
 Itinerary.hasMany(Event);
 
+Itinerary.belongsTo(City);
+
+City.hasMany(Itinerary);
+
 Event.belongsTo(Itinerary);
 
 User.sync();
 Event.sync();
 Itinerary.sync();
+City.sync();
 
 sequelize
   .authenticate()
   .then(function(err) {
     console.log('Connection has been established successfully.');
-  }, function (err) { 
+  }, function (err) {
     console.log('Unable to connect to the database:', err);
 });
 
 exports.User = User;
 exports.Itinerary = Itinerary;
 exports.Event = Event;
+exports.City = City;

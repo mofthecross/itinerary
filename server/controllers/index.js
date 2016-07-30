@@ -18,7 +18,7 @@ var cipher = Promise.promisify(bcrypt.hash);
 // }
 
 module.exports = {
-  
+
   /************************************************
   // Requests to /users
   ************************************************/
@@ -60,7 +60,7 @@ module.exports = {
             console.log('user already exists!', user);
             res.sendStatus(403);
             // Possible redirection?
-          } 
+          }
         });
       })
       .catch(function(err) {
@@ -94,7 +94,8 @@ module.exports = {
       });
     },
     post: function(req, res) {
-      console.log('Incoming post request!');
+
+      console.log('Incoming post request!', req.body.geoId);
       //Check if user exists
       db.User.findOne({
         where: {
@@ -105,11 +106,11 @@ module.exports = {
         //find and upate or create new itinerary
         return db.Itinerary.findOrCreate({
           where: {
-            location: req.body.location,
+            geoId: req.body.geoId,
             UserId: user.dataValues.id,
             numDays: req.body.numDays,
             startDate: req.body.startDate,
-            endDate: req.body.endDate  
+            endDate: req.body.endDate
           }
         });
       })
@@ -167,7 +168,6 @@ module.exports = {
         }
       })
       .then(function(user) {
-        console.log('user', user);
         db.Itinerary.findAll({
           where: {
             UserId: user.dataValues.id
@@ -255,25 +255,27 @@ module.exports = {
 
   /************************************************
     // Requests to /city
-    ************************************************/  
+    ************************************************/
   city: {
     getNomad: function(req, res) {
+      var cityData = req.body;
+
       //split the city into an array
       //[San Franciso, CA, United States]
 
       //san-francisco-ca-united-states
 
       //{name: "Oakland", lat: 37.8043637, lng: -122.2711137, state: "CA", country: "United States"}
-      var city = req.body;
-
-      var completeCity = '';
-
-      if (city.state) {
-        completeCity = city.name.replace(/\s+/g, '-') + '-' + city.state + '-' + city.country.replace(/\s+/g, '-');
-      } else {
-        completeCity = city.name.replace(/\s+/g, '-') + '-' + city.country.replace(/\s+/g, '-');
-      }
-      requestNomad(completeCity, function(err, data, body) {
+      // var city = req.body;
+      //
+      // var completeCity = '';
+      //
+      // if (city.state) {
+      //   completeCity = city.name.replace(/\s+/g, '-') + '-' + city.state + '-' + city.country.replace(/\s+/g, '-');
+      // } else {
+      //   completeCity = city.name.replace(/\s+/g, '-') + '-' + city.country.replace(/\s+/g, '-');
+      // }
+      requestNomad(cityData, function(err, data, body) {
         // console.log('this is the data.body in getNomad in index.js: ', data.body);
         res.send(data.body);
       });
@@ -282,7 +284,7 @@ module.exports = {
 
   /************************************************
   // Requests to /save
-  ************************************************/  
+  ************************************************/
   save: {
     post: function(req, res) {
       db.Itinerary.findOne({where: {id: req.body.id}})
