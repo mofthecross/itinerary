@@ -2,6 +2,7 @@ import React from 'react';
 import {PlannerView} from './PlannerView';
 import Geosuggest from 'react-geosuggest';
 import {FilterButtons} from './FilterButtons';
+import {NomadView} from './NomadView';
 
 export default class ChoosePlannerView extends React.Component {
 
@@ -26,6 +27,7 @@ export default class ChoosePlannerView extends React.Component {
       selectedCity: null,
       filters: [],
       nomadData: {
+        defined: false,
         weather: {
           temperature: null,
           type: null
@@ -287,18 +289,19 @@ export default class ChoosePlannerView extends React.Component {
 
     this.setState({
       nomadData: {
+        defined: true,
         weather: {
-          temperature: 'Current Temperature: ' + front.info.weather.temperature.fahrenheit + '\u00B0',
-          type: 'Type of Weather: ' + front.info.weather.type
+          temperature: front.info.weather.temperature.fahrenheit + '\u00B0',
+          type: front.info.weather.type
         },
         cost: {
-          hotel: 'Average Hotel Cost Per Night: $' + front.cost.hotel.USD,
-          airbnb: 'Average AirBnb Cost Per Night: $' + front.cost.airbnb_median.USD
+          hotel: front.cost.hotel.USD,
+          airbnb: front.cost.airbnb_median.USD
         },
         scores: {
-          safety: 'Safety Rating: ' + (front.scores.safety * 5) + '/5',
-          nomadScore: 'City Rating: ' + (front.scores.nomadScore * 5) + '/5',
-          nightLife: 'Night Life Rating: ' + (front.scores.nightlife * 5) + '/5'
+          safety: (front.scores.safety * 5) + '/5',
+          nomadScore: (front.scores.nomadScore * 5) + '/5',
+          nightLife: (front.scores.nightlife * 5) + '/5'
         }
       }
     });
@@ -369,22 +372,7 @@ export default class ChoosePlannerView extends React.Component {
           </div>
         </div>
 
-        <h2>Available City Facts</h2>
-        <div>
-          {this.state.nomadData.scores.nomadScore}
-          <br></br>
-          {this.state.nomadData.scores.nightLife}
-          <br></br>
-          {this.state.nomadData.scores.safety}
-          <br></br>
-          {this.state.nomadData.weather.temperature}
-          <br></br>
-          {this.state.nomadData.weather.type}
-          <br></br>
-          {this.state.nomadData.cost.hotel}
-          <br></br>
-          {this.state.nomadData.cost.airbnb}
-        </div>
+       <NomadView data={this.state.nomadData} />
 
         <div>
           <PlannerView
