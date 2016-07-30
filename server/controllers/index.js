@@ -103,63 +103,74 @@ module.exports = {
         }
       })
       .then(function(user) {
-        //find and upate or create new itinerary
-        return db.Itinerary.findOrCreate({
+        db.City.findOne({
           where: {
-            geoId: req.body.geoId,
-            UserId: user.dataValues.id,
-            numDays: req.body.numDays,
-            startDate: req.body.startDate,
-            endDate: req.body.endDate
+            geoId: req.body.geoId
           }
-        });
-      })
-      .spread(function(itinerary, created) {
-        //If the itinerary is new
-        if (created) {
-          req.body.events.forEach(function(event) {
-            return db.Event.create({
-              day: event.day,
-              location: event.location,
-              name: event.name,
-              slot: event.slot,
-              image: event.image,
-              url: event.url,
-              snippet: event.snippet,
-              categories: event.categories,
-              address: event.address,
-              ItineraryId: itinerary.dataValues.id
-            });
-          });
-        } else {
-          db.Event.destroy({
+        })
+        .then(function(city) {
+          return db.Itinerary.findOrCreate({
             where: {
-              ItineraryId: itinerary.dataValues.id
+              geoId: req.body.geoId,
+              UserId: user.dataValues.id,
+              numDays: req.body.numDays,
+              startDate: req.body.startDate,
+              endDate: req.body.endDate,
+              CityId: city.dataValues.id
             }
-          })
-          .then(function() {
-          // Then saves new event configuration
-            req.body.events.forEach(function(event) {
-              return db.Event.create({
-                day: event.day,
-                location: event.location,
-                name: event.name,
-                slot: event.slot,
-                image: event.image,
-                url: event.url,
-                snippet: event.snippet,
-                categories: event.categories,
-                address: event.address,
-                ItineraryId: itinerary.dataValues.id
+          });
+        })
+        .spread(function(itinerary, created) {
+            //If the itinerary is new
+            if (created) {
+              req.body.events.forEach(function(event) {
+                return db.Event.create({
+                  day: event.day,
+                  location: event.location,
+                  name: event.name,
+                  slot: event.slot,
+                  image: event.image,
+                  url: event.url,
+                  snippet: event.snippet,
+                  categories: event.categories,
+                  address: event.address,
+                  ItineraryId: itinerary.dataValues.id
+                });
               });
-            });
-          })
-        }
-        var resObj = {
-          id: itinerary.dataValues.id
-        };
-        res.send(resObj);
-      });
+            } else {
+              db.Event.destroy({
+                where: {
+                  ItineraryId: itinerary.dataValues.id
+                }
+              })
+              .then(function() {
+              // Then saves new event configuration
+                req.body.events.forEach(function(event) {
+                  return db.Event.create({
+                    day: event.day,
+                    location: event.location,
+                    name: event.name,
+                    slot: event.slot,
+                    image: event.image,
+                    url: event.url,
+                    snippet: event.snippet,
+                    categories: event.categories,
+                    address: event.address,
+                    ItineraryId: itinerary.dataValues.id
+                  });
+                });
+              })
+            }
+            var resObj = {
+              id: itinerary.dataValues.id
+            };
+            res.send(resObj);
+          });
+
+        //find and upate or create new itinerary
+
+      })
+
     },
     getUserItineraries: function(req, res) {
       db.User.findOne({
@@ -172,11 +183,37 @@ module.exports = {
           where: {
             UserId: user.dataValues.id
           },
-          include: [db.User]
+          include: [db.User, db.City]
         })
         .then(function(itineraries) {
-          res.json(itineraries);
-        });
+          //
+          var newOb = itineraries.map(function(item) {
+            for (var key in item.dataValues.startDate) {
+              console.log('INSIDE OF THE FOR IN LOOP');
+              console.log('This is the key: ', key);
+            }
+            return {
+              "type": "Feature",
+              "geometry": {
+                "type": "Point",
+                "coordinates": [item.dataValues.City.longitude, item.dataValues.City.latitude],
+              },
+              "properties": {
+                "title": item.dataValues.City.name,
+                "description": "from " + item.dataValues.startDate + " to " + item.dataValues.endDate,
+                "image": "https://nomadlist.com" + item.dataValues.City.imgUrl,
+                "icon": {
+                  "iconUrl": "http://www.freeiconspng.com/uploads/blue-star-ball-favorites-icon-png-0.png",
+                  "iconSize": [50, 50], // size of the icon
+                  "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
+                  "popupAnchor": [0, -25], // point from which the popup should open relative to the iconAnchor
+                  "className": "dot"
+                }
+              }
+            }
+          })
+          res.json(newOb);
+        })
       })
     },
     getLocationItineraries: function(req, res) {
@@ -187,6 +224,7 @@ module.exports = {
         include: [db.User]
       })
       .then(function(itineraries) {
+
         res.json(itineraries);
       })
     }
