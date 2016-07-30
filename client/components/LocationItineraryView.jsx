@@ -57,7 +57,7 @@ export default class LocationItineraryView extends React.Component {
     return (
       // Add search functionality here (filter itineraries)
       <div className="itineraries">
-        {this.state.itineraries.map(itinerary => { 
+        {this.state.itineraries.map(itinerary => {
           return (
             <ExpandedItineraryView itinerary={itinerary} saveItinerary={this.props.saveItinerary} usable={true}/>
           );
@@ -70,7 +70,7 @@ export default class LocationItineraryView extends React.Component {
   //   return (
   //     // Add search functionality here (filter itineraries)
   //     <div className="itineraries">
-  //       {this.state.itineraries.map(itinerary => { 
+  //       {this.state.itineraries.map(itinerary => {
   //         return (
   //           <div>
   //             <Summary data={itinerary} />
