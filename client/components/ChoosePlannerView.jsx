@@ -101,11 +101,10 @@ export default class ChoosePlannerView extends React.Component {
   }
 
   getItinerary() {
-    console.log('getting itinerary')
     let data = {
       location: this.state.location,
       filters: this.state.filters
-    }
+    };
     this.serverRequest('/classes/events', data, this.formatYelpData.bind(this));
   }
 
@@ -204,10 +203,6 @@ export default class ChoosePlannerView extends React.Component {
   }
 
   onSuggestSelect(suggest) {
-    //we receive the information as, "Sacramento, CA, United States"
-    //we split it so everything is its own string
-    // types={['(cities)']}
-    console.log('onSuggest',suggest);
     var cityData = {};
 
     suggest.gmaps.address_components.forEach(function(address) {
@@ -225,23 +220,6 @@ export default class ChoosePlannerView extends React.Component {
     cityData.geoId = suggest.placeId;
 
     console.log('city, state, country', cityData);
-
-
-    // var citySplit = suggest.label.split(', ');
-    // var cityData = {
-    //   name: citySplit[0],
-    //   lat: suggest.location.lat,
-    //   lng: suggest.location.lng
-    // };
-    //
-    // if (citySplit.length > 2) {
-    //   if (citySplit[2] === 'United States') {
-    //     cityData.state = citySplit[1];
-    //   }
-    //   cityData.country = citySplit[2];
-    // } else {
-    //   cityData.country = citySplit[1];
-    // }
 
     this.setState({
       selectedCity: cityData,
@@ -309,9 +287,9 @@ export default class ChoosePlannerView extends React.Component {
 
   toggleFilter(event) {
     event.preventDefault();
-    let yelpFilter = event.target.id
+    let yelpFilter = event.target.id;
     //Check if filter needs to be added or removed from state
-    let foundFilter = _.indexOf(this.state.filters, yelpFilter)
+    let foundFilter = _.indexOf(this.state.filters, yelpFilter);
     if (foundFilter === -1) {
       //Highlight button that was pressed
       event.target.className = event.target.className.concat(' btn-primary');
@@ -321,11 +299,11 @@ export default class ChoosePlannerView extends React.Component {
     } else {
       //Remove highlight of button
       event.target.className = event.target.className.replace('btn-primary', '');
-      let filters = this.state.filters.slice()
+      let filters = this.state.filters.slice();
       filters.splice(foundFilter, 1);
       this.setState({
         filters: filters
-      })
+      });
     }
   }
 

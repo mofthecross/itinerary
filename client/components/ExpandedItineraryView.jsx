@@ -104,16 +104,13 @@ export default class ExpandedItineraryView extends React.Component {
           this.state.expand ?
           <div>
             {_.range(1, this.props.itinerary.numDays + 1).map((day) => {
-                return (<DayView day={day} events={this.state.events} key={day} />);
-              }
-            )}
+              return (<DayView day={day} events={this.state.events} key={day} />);
+            })}
           </div>
           : null
         }
-
       </div>
-
-    )
+    );
   }
 
 }

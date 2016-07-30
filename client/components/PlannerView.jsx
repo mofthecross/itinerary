@@ -13,18 +13,18 @@ export let PlannerView = (props) => {
         <div>
           <select onChange={props.handleChange} id="selected">
             {props.yelpEvents.map(event => {
-               return <option key={event.name}>{event.name}</option>;
-             })}
+              return <option key={event.name}>{event.name}</option>;
+            })}
           </select>
           <select onChange={props.handleChange} id="day">
             {_.range(1, props.numDays + 1).map(day => {
-               return <option key={day}>{day}</option>;
-             })}
+              return <option key={day}>{day}</option>;
+            })}
           </select>
           <select onChange={props.handleChange} id="slot">
             {_.range(1, 4).map(slot => {
-               return <option key={slot}>{slot}</option>;
-             })}
+              return <option key={slot}>{slot}</option>;
+            })}
           </select>
 
           <button onClick={props.swap}>Swap</button>
@@ -38,7 +38,7 @@ export let PlannerView = (props) => {
     );
   } else {
     return (
-      <h1> Create an Itinerary </h1>
+      <h3 className="text-center">Create an itinerary</h3>
     );
   }
 };
