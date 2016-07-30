@@ -31,7 +31,6 @@ export default class ItineraryView extends React.Component {
           return res.json();
         })
         .then(json => {
-          console.log("fuck", json);
           this.setState({itineraries: json});
         })
         .catch(err => {

@@ -1,7 +1,6 @@
 import React from 'react';
 
 export let Summary = ({data}) => {
-  console.log("clay", data)
   // Note that the image in return is hardcoded for now
   return (
     <div className="summary">
