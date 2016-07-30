@@ -11,26 +11,30 @@ export default class LandingView extends React.Component {
 		};
 	}
 
-  componentDidMount() {
+  componentWillMount() {
 		//public token for mapbox
 		L.mapbox.accessToken = 'pk.eyJ1IjoibW9mdGhlY3Jvc3MiLCJhIjoiY2lyNXBkNnliMDA5Z2c4bTFweWJlN2dyaCJ9.dBygwwib3OjYEypyhSMVDg';
 		var example = [
-			{
-				"type": "Feature",
-				"geometry": {
-					"type": "Point",
-					"coordinates": [-77.031952,38.913184]
-				}
-			},
-			{
-				"type": "Feature",
-				"geometry": {
-					"type": "Point",
-					"coordinates": [-122.413682,37.775408]
-				}
-			}
-		];
-
+  {
+    "type": "Feature",
+    "geometry": {
+      "type": "Point",
+      "coordinates": [-77.031952,38.913184]
+    },
+    "properties": {
+      "title": "Mapbox DC",
+      "description": "1714 14th St NW, Washington DC",
+      "image": "https://farm9.staticflickr.com/8604/15769066303_3e4dcce464_n.jpg",
+      "icon": {
+          "iconUrl": "",
+          "iconSize": [50, 50], // size of the icon
+          "iconAnchor": [25, 25], // point of the icon which will correspond to marker's location
+          "popupAnchor": [0, -25], // point from which the popup should open relative to the iconAnchor
+          "className": "dot"
+      }
+    }
+  }
+];
 		// mapGeo.scrollWheelZoom.enable();
 
 		this.serverRequest = function ajax(url, data) {
@@ -47,15 +51,56 @@ export default class LandingView extends React.Component {
 					return res.json();
 				})
 				.then(json => {
-					var locations = json.map(function(item) {
-						return item.location;
-					})
-					console.log(locations);
-					// this.setState({locations: locations});
+          var geoIds = json;
+          return geoIds
+          // json.forEach(function(itinerary) {
+          //   var geoId = {
+          //     "type": "Feature",
+          //     "geometry": {
+          //       "type": "Point",
+          //       "coordinates": [itinerary.City.latitude, itinerary.City.longitude]
+          //     },
+          //     "properties": {
+          //       "title": itinerary.City.name,
+          //       "description": "from " + itinerary.startDate + " to " + itinerary.endDate,
+          //       "image": itinerary.City.imgUrl,
+          //       "icon": {
+          //         "iconUrl": itinerary.City.imgUrl,
+          //         "iconSize": [50, 50],
+          //         "iconAnchor": [25, 25],
+          //         "popupAnchor": [0, -25],
+          //         "className": "dot"
+          //       }
+          //     }
+          //   }
+          //   geoIds.push(geoId);
+          // });
+
+				})
+        .then(geoIds => {
+          console.log("yoooooo", geoIds)
           var map = L.mapbox.map('map', 'mapbox.streets')
             .setView([37.8, -96], 4);
-          var myLayer = L.mapbox.featureLayer().setGeoJSON(locations).addTo(map);
-				})
+
+            var mapTooltipsJS = L.mapbox.map('map-tooltips-js', 'mapbox.light')
+            .setView([37.8, -96], 4);
+            var myLayer = L.mapbox.featureLayer().addTo(mapTooltipsJS);
+
+          var myLayer = L.mapbox.featureLayer().addTo(map);
+          var myLayer = L.mapbox.featureLayer().addTo(mapTooltipsJS);
+
+          myLayer.on('layeradd', function(e) {
+            console.log("e eee ", e)
+            var marker = e.layer,
+              feature = marker.feature;
+            marker.setIcon(L.icon(feature.properties.icon));
+            var content = '<h2>'+ feature.properties.title+'<\/h2>' + '<img src="'+feature.properties.image+'" alt="">';
+            marker.bindPopup(content);
+          });
+
+          myLayer.setGeoJSON(geoIds);
+          mapTooltipsJS.scrollWheelZoom.disable();
+        })
 				.catch(err => {
 					console.log(err);
 				});
